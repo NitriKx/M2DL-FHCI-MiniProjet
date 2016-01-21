@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -19,6 +23,11 @@ android {
         }
     }
 
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize "2g" // Use gig increments depending on needs
+        incremental true
+    }
 }
 
 dependencies {
@@ -27,4 +36,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
+
+    // ORM SQLITE
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }
