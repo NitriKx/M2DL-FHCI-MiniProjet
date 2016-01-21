@@ -2,6 +2,7 @@ package com.lifo.upspoi.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polygon;
 
 import java.util.List;
 
@@ -10,18 +11,18 @@ import java.util.List;
  */
 public class ZoneRectangulaireInteret extends ElementDeCarte {
 
-    private LatLngBounds bounds;
+    private List<LatLng> polygon;
 
-    public ZoneRectangulaireInteret(String nom, List<Tag> tagsAssocies, Image image, LatLngBounds bounds) {
+    public ZoneRectangulaireInteret(String nom, List<Tag> tagsAssocies, Image image, List<LatLng> polygon) {
         super(nom, tagsAssocies, image);
-        this.bounds = bounds;
+        this.polygon = polygon;
     }
 
-    public LatLngBounds getBounds() {
-        return bounds;
+    public List<LatLng> getPolygon() {
+        return polygon;
     }
 
-    public void setBounds(LatLngBounds bounds) {
-        this.bounds = bounds;
+    public void setPolygon(List<LatLng> polygon) {
+        this.polygon = polygon;
     }
 }

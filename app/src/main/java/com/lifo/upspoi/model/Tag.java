@@ -6,4 +6,16 @@ package com.lifo.upspoi.model;
 public class Tag {
     private String nomTag;
 
+    public Tag(String nomTag) {
+        this.nomTag = nomTag;
+    }
+
+    public String getNomTag() {
+        return nomTag;
+    }
+
+    @Override
+    public String toString() {
+        return getNomTag();
+    }
 }
