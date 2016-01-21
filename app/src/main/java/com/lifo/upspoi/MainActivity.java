@@ -13,21 +13,29 @@ import android.support.v4.content.ContextCompat;
 import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.lifo.upspoi.services.UtilisateurService;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback
+        // Pour récupérer position
+        /*GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener*/ {
 
     private GoogleMap mMap;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
+    private UiSettings mUiSettings;
+
+    //Pour récupérer position
+    /*private Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +48,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         verifierLogin();
 
         setContentView(R.layout.activity_main);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
+
+        // Pour récupérer position
+        // Create an instance of GoogleAPIClient.
+        /*if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }*/
     }
 
     /**
@@ -58,6 +78,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mUiSettings = mMap.getUiSettings();
+
         LatLng universite = new LatLng(43.560724, 1.468703);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -67,24 +89,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            mUiSettings.setMyLocationButtonEnabled(false);
+            mUiSettings.setZoomControlsEnabled(true);
         }
 
     }
 
-    @Override
-    protected void onStart() {
+    // Pour récupérer position
+    /*protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
 
-    @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
@@ -92,10 +111,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
+        }
+
+        if(mLastLocation != null)
+        {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
+                    .title("Ma position"));
         }
     }
 
@@ -107,7 +134,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
+    }*/
 
 
     //
