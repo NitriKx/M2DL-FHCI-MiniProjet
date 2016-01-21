@@ -7,14 +7,24 @@ import com.lifo.upspoi.model.Utilisateur;
  */
 public class UtilisateurService {
 
+    /**
+     * Cet attribut devrait en fait être stocké dans un base de données locale, afin que
+     * l'utilisateur n'ai pas à se logguer à chaque fois qu'il ré-ouvre l'application.
+     */
+    public Utilisateur utilisateurConnecte = null;
 
-    public Utilisateur getUtilisateurPourPseudo(String pseudo) {
-        return null;
+    public boolean estLoggue() {
+        return this.utilisateurConnecte != null;
     }
 
+    public Utilisateur getUtilisateurConnecte() {
+        return utilisateurConnecte;
+    }
 
-
-
+    public Utilisateur loggerUtilisateur(String nomUtilisateur, String passwordEnClair) {
+        this.utilisateurConnecte = new Utilisateur(nomUtilisateur, passwordEnClair);
+        return getUtilisateurConnecte();
+    }
 
     //
     //  SINGLETON

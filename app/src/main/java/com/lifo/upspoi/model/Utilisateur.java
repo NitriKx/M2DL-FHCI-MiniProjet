@@ -11,6 +11,8 @@ public class Utilisateur {
 
     public Utilisateur(String nomUtilisateur, String hachedPassword) {
         this.nomUtilisateur = nomUtilisateur;
+
+        // TODO: Hacher le mot de passe
         this.hachedPassword = hachedPassword;
     }
 
