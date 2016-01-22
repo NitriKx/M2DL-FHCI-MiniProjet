@@ -17,13 +17,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.lifo.upspoi.listener.MyOnMarkerClickListener;
+import com.lifo.upspoi.model.ElementDeCarte;
+import com.lifo.upspoi.model.PointInteret;
+import com.lifo.upspoi.services.PointInteretService;
 import com.lifo.upspoi.services.UtilisateurService;
 
 import java.io.File;
+import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Pour récupérer position
@@ -32,6 +37,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Uri imageUri;
     private UiSettings mUiSettings;
+    private List<? extends ElementDeCarte> elementsCarte;
 
     //Pour récupérer position
     /*private Location mLastLocation;
@@ -80,8 +86,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mUiSettings = mMap.getUiSettings();
 
+        // Positionnement map
         LatLng universite = new LatLng(43.560724, 1.468703);
-
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(universite)      // Centre la map sur Paul Sabatier
                 .zoom(15)
@@ -89,6 +95,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        // Ajout marqueurs pour éléments du plan de recyclage
+        elementsCarte = PointInteretService.getInstance().getElementDeCarteDansZone(null);
+
+        for(ElementDeCarte element : elementsCarte)
+        {
+            if(element instanceof PointInteret)
+            {
+                if(element.getNom().equals("verre"))
+                {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(((PointInteret) element).getPosition())
+                            .title("Verre")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                }
+
+                if(element.getNom().equals("textile"))
+                {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(((PointInteret) element).getPosition())
+                            .title("Textiles")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+                }
+            }
+        }
+
+        // Affichage position utilisateur
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
