@@ -1,14 +1,19 @@
 package com.lifo.upspoi;
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.lifo.upspoi.model.Utilisateur;
+import com.lifo.upspoi.services.UtilisateurService;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -17,13 +22,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize l'ORM de gestion de la base de donnée locale
+        ActiveAndroid.initialize(this);
+
+        // Vérifie que l'utilisateur est bien authentifié, sinon on lui montre l'acitivité de login
+        verifierLogin();
+
         setContentView(R.layout.activity_main);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -43,4 +54,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
+
+
+    //
+    //
+    //   PRIVATE
+    //
+    //
+
+    /**
+     *
+     */
+    private void verifierLogin() {
+
+        if(UtilisateurService.getInstance().estLoggue() == false) {
+            Intent lancerAcitiviteLogin = new Intent(this, LoginActivity.class);
+            this.startActivity(lancerAcitiviteLogin);
+        }
+    }
+
 }
