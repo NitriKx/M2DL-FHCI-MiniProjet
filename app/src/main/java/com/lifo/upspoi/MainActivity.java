@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+
 import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.model.ElementDeCarte;
 import com.lifo.upspoi.model.PointInteret;
@@ -48,6 +50,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private Uri imageUri;
     private UiSettings mUiSettings;
     private List<? extends ElementDeCarte> elementsCarte;
+    private List<LatLng> delimitationFac;
 
     //Pour récupérer position
     private Location mLastLocation;
@@ -154,6 +157,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+
+        // Delimitation de la fac
+        delimitationFac = PointInteretService.getInstance().getDelimitationFac();
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        for(LatLng point : delimitationFac)
+        {
+            polylineOptions.add(point);
+        }
+
+        mMap.addPolyline(polylineOptions.width(4));
 
         // Affichage position utilisateur
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
