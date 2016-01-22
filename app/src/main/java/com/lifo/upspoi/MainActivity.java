@@ -3,6 +3,7 @@ package com.lifo.upspoi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,9 +30,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.model.ElementDeCarte;
 import com.lifo.upspoi.model.PointInteret;
+import com.lifo.upspoi.model.ZoneRectangulaireInteret;
 import com.lifo.upspoi.services.PointInteretService;
 import com.lifo.upspoi.services.UtilisateurService;
 
@@ -124,6 +126,31 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .position(((PointInteret) element).getPosition())
                             .title("Textiles")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+                }
+            }
+
+            if(element instanceof ZoneRectangulaireInteret)
+            {
+                PolygonOptions rectOptions = new PolygonOptions().strokeWidth(5);
+
+                for(LatLng point : ((ZoneRectangulaireInteret) element).getPolygon())
+                {
+                    rectOptions.add(point);
+                }
+
+                if(element.getNom().equals("carton"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(255,153,51)).strokeColor(Color.rgb(255,153,51)));
+                }
+
+                if(element.getNom().equals("pile"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(178,102,255)).strokeColor(Color.rgb(178,102,255)));
+                }
+
+                if(element.getNom().equals("papier"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.CYAN).strokeColor(Color.CYAN));
                 }
             }
         }
