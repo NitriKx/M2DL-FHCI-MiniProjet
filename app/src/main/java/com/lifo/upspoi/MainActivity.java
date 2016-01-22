@@ -154,7 +154,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (mLastLocation != null) {
+        if (resultCode == RESULT_OK && mLastLocation != null) {
             mMap.addMarker(new MarkerOptions().position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("POI").snippet("Voir la photo"));
             mMap.setOnInfoWindowClickListener(new MyOnInfoWindowClickListener(this, imageUri));
         }
