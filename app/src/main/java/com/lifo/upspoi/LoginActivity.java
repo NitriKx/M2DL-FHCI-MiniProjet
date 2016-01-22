@@ -19,7 +19,7 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        // On ne fait rien car l'utilisateur n'a pas le droit de quitter l'activite
+        // On ne fait rien car l'utilisateur n'a pas le droit de quitter l'activite sans être loggué
     }
 
     public void onLoginButtonPressed(View v) {
@@ -30,8 +30,10 @@ public class LoginActivity extends Activity {
             return;
         }
 
+        // On loggue l'utilisateur
         UtilisateurService.getInstance().loggerUtilisateur(usernameEntered, "");
 
+        // Une fois loggué, on ferme l'activité de Login
         finish();
     }
 }

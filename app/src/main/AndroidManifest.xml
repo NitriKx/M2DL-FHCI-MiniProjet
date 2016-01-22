@@ -28,6 +28,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!--
+               ACTIVE ANDROID
+
+               Metadata liée à l'ORM de gestion de la base de données locale Android
+
+        -->
+        <meta-data android:name="AA_DB_NAME" android:value="UPSPOI.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main">

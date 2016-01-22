@@ -1,15 +1,27 @@
 package com.lifo.upspoi.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
-public class Utilisateur {
+@Table(name = "Utilisateur")
+public class Utilisateur extends Model {
 
+    @Column(name = "nomUtilisateur", unique = true)
     private String nomUtilisateur;
 
+    @Column(name = "hachedPassword")
     private String hachedPassword;
 
+    public Utilisateur() {
+        super();
+    }
+
     public Utilisateur(String nomUtilisateur, String hachedPassword) {
+        super();
         this.nomUtilisateur = nomUtilisateur;
 
         // TODO: Hacher le mot de passe
