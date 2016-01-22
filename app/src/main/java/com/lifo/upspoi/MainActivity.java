@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.lifo.upspoi.listener.MyOnMarkerClickListener;
+import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.model.ElementDeCarte;
 import com.lifo.upspoi.model.PointInteret;
 import com.lifo.upspoi.services.PointInteretService;
@@ -155,8 +155,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onActivityResult(requestCode, resultCode, data);
 
         if (mLastLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-            mMap.setOnMarkerClickListener(new MyOnMarkerClickListener(this, imageUri));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("POI").snippet("Voir la photo"));
+            mMap.setOnInfoWindowClickListener(new MyOnInfoWindowClickListener(this, imageUri));
         }
     }
 
