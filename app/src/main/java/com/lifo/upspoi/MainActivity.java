@@ -3,34 +3,34 @@ package com.lifo.upspoi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.activeandroid.ActiveAndroid;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.lifo.upspoi.listener.MyOnMarkerClickListener;
 import com.lifo.upspoi.services.UtilisateurService;
+
+import java.io.File;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Pour récupérer position
         /*GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener*/ {
 
     private GoogleMap mMap;
+    private Uri imageUri;
     private UiSettings mUiSettings;
 
     //Pour récupérer position
@@ -95,7 +95,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mUiSettings.setMyLocationButtonEnabled(false);
             mUiSettings.setZoomControlsEnabled(true);
         }
+    }
 
+    public void clickPrendrePhoto(View arg0) {
+
+        // Création de l'intent de type ACTION_IMAGE_CAPTURE
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+// Création d'un fichier de type image
+        File photo = new File(Environment.getExternalStorageDirectory(),  "Pic.jpg");
+        imageUri = Uri.fromFile(photo);
+// On fait le lien entre la photo prise et le fichier que l'on vient de créer
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+// Lancement de l'intent
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(43.560724, 1.468703)));
+        mMap.setOnMarkerClickListener(new MyOnMarkerClickListener(this, imageUri));
     }
 
     // Pour récupérer position
