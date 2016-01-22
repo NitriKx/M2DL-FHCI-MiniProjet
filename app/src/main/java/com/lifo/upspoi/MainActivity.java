@@ -3,15 +3,24 @@ package com.lifo.upspoi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,9 +39,8 @@ import com.lifo.upspoi.services.UtilisateurService;
 import java.io.File;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback
-        // Pour récupérer position
-        /*GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener*/ {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     private Uri imageUri;
@@ -40,8 +48,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private List<? extends ElementDeCarte> elementsCarte;
 
     //Pour récupérer position
-    /*private Location mLastLocation;
-    private GoogleApiClient mGoogleApiClient;*/
+    private Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +71,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Pour récupérer position
         // Create an instance of GoogleAPIClient.
-        /*if (mGoogleApiClient == null) {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
-        }*/
+        }
     }
 
     /**
@@ -134,7 +142,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Création de l'intent de type ACTION_IMAGE_CAPTURE
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 // Création d'un fichier de type image
-        File photo = new File(Environment.getExternalStorageDirectory(),  "Pic.jpg");
+        File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
         imageUri = Uri.fromFile(photo);
 // On fait le lien entre la photo prise et le fichier que l'on vient de créer
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
@@ -146,12 +154,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(43.560724, 1.468703)));
-        mMap.setOnMarkerClickListener(new MyOnMarkerClickListener(this, imageUri));
+        if (mLastLocation != null) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
+            mMap.setOnMarkerClickListener(new MyOnMarkerClickListener(this, imageUri));
+        }
     }
 
     // Pour récupérer position
-    /*protected void onStart() {
+    protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
     }
@@ -164,18 +174,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-        }
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if(mLastLocation != null)
-        {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                    .title("Ma position"));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
     }
 
     @Override
@@ -186,7 +201,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }*/
+    }
 
 
     //
@@ -206,4 +221,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+    }
 }
