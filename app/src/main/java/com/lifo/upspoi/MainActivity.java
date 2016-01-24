@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.activeandroid.ActiveAndroid;
@@ -34,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.lifo.upspoi.Utils.MySpinnerAdapter;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.listener.MyOnItemSelectedListener;
 import com.lifo.upspoi.model.ElementDeCarte;
@@ -103,9 +103,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             list.add(tag.getNomTag());
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        MySpinnerAdapter dataAdapter = new MySpinnerAdapter(this, list, pointInteretService.getTagDeclare());
         spinner.setAdapter(dataAdapter);
         spinner.setOnItemSelectedListener(new MyOnItemSelectedListener(this));
     }
