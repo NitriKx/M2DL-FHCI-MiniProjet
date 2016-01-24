@@ -23,7 +23,7 @@ public class PointInteretService {
                 new Tag("verre"),
                 new Tag("carton"),
                 new Tag("textile"),
-                new Tag("piles"),
+                new Tag("pile"),
                 new Tag("papier")
         );
     }
