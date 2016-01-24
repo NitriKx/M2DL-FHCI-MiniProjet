@@ -3,7 +3,6 @@ package com.lifo.upspoi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Spinner;
 
 import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,14 +33,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.lifo.upspoi.Utils.MySpinnerAdapter;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
+import com.lifo.upspoi.listener.MyOnItemSelectedListener;
 import com.lifo.upspoi.model.ElementDeCarte;
 import com.lifo.upspoi.model.PointInteret;
+import com.lifo.upspoi.model.Tag;
 import com.lifo.upspoi.model.ZoneRectangulaireInteret;
 import com.lifo.upspoi.services.PointInteretService;
 import com.lifo.upspoi.services.UtilisateurService;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -51,6 +55,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private UiSettings mUiSettings;
     private List<? extends ElementDeCarte> elementsCarte;
     private List<LatLng> delimitationFac;
+    private Spinner spinner;
+    private PointInteretService pointInteretService = PointInteretService.getInstance();
 
     //Pour récupérer position
     private Location mLastLocation;
@@ -83,6 +89,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        ajoutTagListe();
+    }
+
+    private void ajoutTagListe() {
+        spinner = (Spinner) findViewById(R.id.tags_spinner);
+        List<String> list = new ArrayList<String>();
+
+        list.add("Tous");
+        for (Tag tag : pointInteretService.getTagDeclare()
+                ) {
+            list.add(tag.getNomTag());
+        }
+
+        MySpinnerAdapter dataAdapter = new MySpinnerAdapter(this, list, pointInteretService.getTagDeclare());
+        spinner.setAdapter(dataAdapter);
+        spinner.setOnItemSelectedListener(new MyOnItemSelectedListener(this));
     }
 
     /**
@@ -108,66 +131,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        // Ajout marqueurs pour éléments du plan de recyclage
-        elementsCarte = PointInteretService.getInstance().getElementDeCarteDansZone(null);
-
-        for(ElementDeCarte element : elementsCarte)
-        {
-            if(element instanceof PointInteret)
-            {
-                if(element.getNom().equals("verre"))
-                {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(((PointInteret) element).getPosition())
-                            .title("Verre")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                }
-
-                if(element.getNom().equals("textile"))
-                {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(((PointInteret) element).getPosition())
-                            .title("Textiles")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-                }
-            }
-
-            if(element instanceof ZoneRectangulaireInteret)
-            {
-                PolygonOptions rectOptions = new PolygonOptions().strokeWidth(5);
-
-                for(LatLng point : ((ZoneRectangulaireInteret) element).getPolygon())
-                {
-                    rectOptions.add(point);
-                }
-
-                if(element.getNom().equals("carton"))
-                {
-                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(255,153,51)).strokeColor(Color.rgb(255,153,51)));
-                }
-
-                if(element.getNom().equals("pile"))
-                {
-                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(178,102,255)).strokeColor(Color.rgb(178,102,255)));
-                }
-
-                if(element.getNom().equals("papier"))
-                {
-                    mMap.addPolygon(rectOptions.fillColor(Color.CYAN).strokeColor(Color.CYAN));
-                }
-            }
-        }
-
-        // Delimitation de la fac
-        delimitationFac = PointInteretService.getInstance().getDelimitationFac();
-        PolylineOptions polylineOptions = new PolylineOptions();
-
-        for(LatLng point : delimitationFac)
-        {
-            polylineOptions.add(point);
-        }
-
-        mMap.addPolyline(polylineOptions.width(4));
+        afficherPOI(null);
 
         // Affichage position utilisateur
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -176,6 +140,62 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mUiSettings.setMyLocationButtonEnabled(false);
             mUiSettings.setZoomControlsEnabled(true);
         }
+    }
+
+    public void afficherPOI(String filtre) {
+
+        boolean correspondAuFiltre = false;
+
+        elementsCarte = pointInteretService.getElementDeCarteDansZone(null);
+
+        mMap.clear();
+
+        // Ajout marqueurs pour éléments du plan de recyclage
+
+        for (ElementDeCarte element : elementsCarte) {
+            correspondAuFiltre = false;
+
+            if (filtre != null) {
+                for (Tag tag : element.getTagsAssocies()) {
+                    if (tag.getNomTag().equals(filtre)) {
+                        correspondAuFiltre = true;
+                    }
+                }
+            } else {
+                correspondAuFiltre = true;
+            }
+
+            if (correspondAuFiltre) {
+
+                if (element instanceof PointInteret) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(((PointInteret) element).getPosition())
+                            .title(element.getNom())
+                            .snippet(element.getNomTags())
+                            .icon(BitmapDescriptorFactory.defaultMarker(element.getCouleur().getHue())));
+                }
+
+                if (element instanceof ZoneRectangulaireInteret) {
+                    PolygonOptions rectOptions = new PolygonOptions().strokeWidth(5);
+
+                    for (LatLng point : ((ZoneRectangulaireInteret) element).getPolygon()) {
+                        rectOptions.add(point);
+                    }
+
+                    mMap.addPolygon(rectOptions.fillColor(element.getCouleur().getIntCouleur()).strokeColor(element.getCouleur().getIntCouleur()));
+                }
+            }
+        }
+
+        // Delimitation de la fac
+        delimitationFac = PointInteretService.getInstance().getDelimitationFac();
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        for (LatLng point : delimitationFac) {
+            polylineOptions.add(point);
+        }
+
+        mMap.addPolyline(polylineOptions.width(4));
     }
 
     public void clickPrendrePhoto(View arg0) {
@@ -256,7 +276,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void verifierLogin() {
 
-        if(UtilisateurService.getInstance().estLoggue() == false) {
+        if (UtilisateurService.getInstance().estLoggue() == false) {
             Intent lancerAcitiviteLogin = new Intent(this, LoginActivity.class);
             this.startActivity(lancerAcitiviteLogin);
         }

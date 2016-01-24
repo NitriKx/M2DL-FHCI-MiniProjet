@@ -1,5 +1,7 @@
 package com.lifo.upspoi.model;
 
+import com.lifo.upspoi.Utils.Color;
+
 import java.util.List;
 
 /**
@@ -42,5 +44,24 @@ public class ElementDeCarte {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public Color getCouleur() {
+        for (Tag tag:tagsAssocies
+             ) {
+            if (!tag.getNomTag().equals("recyclage")) {
+                return tag.getCouleur();
+            }
+        }
+        return new Color(190,190,190);
+    }
+
+    public String getNomTags() {
+        StringBuilder resultat = new StringBuilder();
+        for (Tag tag:tagsAssocies
+             ) {
+            resultat.append("["+tag.getNomTag()+"]");
+        }
+        return resultat.toString();
     }
 }
