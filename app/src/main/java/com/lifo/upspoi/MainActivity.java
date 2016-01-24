@@ -3,6 +3,7 @@ package com.lifo.upspoi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,9 +31,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.model.ElementDeCarte;
 import com.lifo.upspoi.model.PointInteret;
+import com.lifo.upspoi.model.ZoneRectangulaireInteret;
 import com.lifo.upspoi.services.PointInteretService;
 import com.lifo.upspoi.services.UtilisateurService;
 
@@ -46,6 +50,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private Uri imageUri;
     private UiSettings mUiSettings;
     private List<? extends ElementDeCarte> elementsCarte;
+    private List<LatLng> delimitationFac;
 
     //Pour récupérer position
     private Location mLastLocation;
@@ -126,7 +131,43 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
                 }
             }
+
+            if(element instanceof ZoneRectangulaireInteret)
+            {
+                PolygonOptions rectOptions = new PolygonOptions().strokeWidth(5);
+
+                for(LatLng point : ((ZoneRectangulaireInteret) element).getPolygon())
+                {
+                    rectOptions.add(point);
+                }
+
+                if(element.getNom().equals("carton"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(255,153,51)).strokeColor(Color.rgb(255,153,51)));
+                }
+
+                if(element.getNom().equals("pile"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.rgb(178,102,255)).strokeColor(Color.rgb(178,102,255)));
+                }
+
+                if(element.getNom().equals("papier"))
+                {
+                    mMap.addPolygon(rectOptions.fillColor(Color.CYAN).strokeColor(Color.CYAN));
+                }
+            }
         }
+
+        // Delimitation de la fac
+        delimitationFac = PointInteretService.getInstance().getDelimitationFac();
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        for(LatLng point : delimitationFac)
+        {
+            polylineOptions.add(point);
+        }
+
+        mMap.addPolyline(polylineOptions.width(4));
 
         // Affichage position utilisateur
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
