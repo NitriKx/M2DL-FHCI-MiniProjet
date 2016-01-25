@@ -1,19 +1,20 @@
 package com.lifo.upspoi.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
-@Table(name = "Utilisateur")
-public class Utilisateur extends Model {
+@Table(database = BaseDeDonneeLocale.class)
+public class Utilisateur extends BaseModel {
 
-    @Column(name = "nomUtilisateur", unique = true)
+    @PrimaryKey
     private String nomUtilisateur;
 
-    @Column(name = "hachedPassword")
+    @Column
     private String hachedPassword;
 
     public Utilisateur() {

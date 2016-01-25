@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.lifo.upspoi.model.Tag;
+import com.lifo.upspoi.model.PointTag;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import java.util.List;
  * Created by Stav on 24/01/2016.
  */
 public class MySpinnerAdapter extends ArrayAdapter<String> {
-    private List<Tag> tags;
+    private List<PointTag> tags;
 
-    public MySpinnerAdapter(Context context, List<String> items, List<Tag> tags)
+    public MySpinnerAdapter(Context context, List<String> items, List<PointTag> tags)
     {
         super(context, android.R.layout.simple_spinner_item, items);
         this.tags = tags;

@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Spinner;
 
-import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -33,13 +32,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.common.collect.Lists;
 import com.lifo.upspoi.Utils.MySpinnerAdapter;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.listener.MyOnItemSelectedListener;
 import com.lifo.upspoi.model.ElementDeCarte;
-import com.lifo.upspoi.model.PointInteret;
-import com.lifo.upspoi.model.Tag;
-import com.lifo.upspoi.model.ZoneRectangulaireInteret;
+import com.lifo.upspoi.model.PointTag;
+import com.lifo.upspoi.services.InitialisationService;
 import com.lifo.upspoi.services.PointInteretService;
 import com.lifo.upspoi.services.UtilisateurService;
 
@@ -47,8 +46,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     private Uri imageUri;
@@ -66,8 +64,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize l'ORM de gestion de la base de donnée locale
-        ActiveAndroid.initialize(this);
+        // Initialise la base de données locale avec les données par défaut
+        InitialisationService.getInstance().initialiserBaseSiBesoin();
+
+        startActivity(new Intent(this, DatabaseDebugActivity.class));
 
         // Vérifie que l'utilisateur est bien authentifié, sinon on lui montre l'acitivité de login
         verifierLogin();
@@ -99,12 +99,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         List<String> list = new ArrayList<String>();
 
         list.add("Tous");
-        for (Tag tag : pointInteretService.getTagDeclare()
-                ) {
-            list.add(tag.getNomTag());
-        }
+        list.addAll(pointInteretService.getTagsDeclare().keySet());
 
-        MySpinnerAdapter dataAdapter = new MySpinnerAdapter(this, list, pointInteretService.getTagDeclare());
+        MySpinnerAdapter dataAdapter = new MySpinnerAdapter(this, list, Lists.newArrayList(pointInteretService.getTagsDeclare().values()));
         spinner.setAdapter(dataAdapter);
         spinner.setOnItemSelectedListener(new MyOnItemSelectedListener(this));
     }
@@ -157,7 +154,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             correspondAuFiltre = false;
 
             if (filtre != null) {
-                for (Tag tag : element.getTagsAssocies()) {
+                for (PointTag tag : element.getTagsAssocies()) {
                     if (tag.getNomTag().equals(filtre)) {
                         correspondAuFiltre = true;
                     }
@@ -167,19 +164,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             if (correspondAuFiltre) {
+                List<LatLng> positionPourCetElement = element.getPoints();
 
-                if (element instanceof PointInteret) {
+                // MARKER - Si le nombre de position est égal à 1, cela signifie que l'on souhaite dessiner un point
+                if (positionPourCetElement.size() == 1) {
                     mMap.addMarker(new MarkerOptions()
-                            .position(((PointInteret) element).getPosition())
+                            .position(positionPourCetElement.get(0))
                             .title(element.getNom())
                             .snippet(element.getNomTags())
                             .icon(BitmapDescriptorFactory.defaultMarker(element.getCouleur().getHue())));
                 }
 
-                if (element instanceof ZoneRectangulaireInteret) {
+                // ZONE - Si le nombre de position est égal à 1, cela signifie que l'on souhaite dessiner un point
+                else if (positionPourCetElement.size() > 1) {
                     PolygonOptions rectOptions = new PolygonOptions().strokeWidth(5);
 
-                    for (LatLng point : ((ZoneRectangulaireInteret) element).getPolygon()) {
+                    for (LatLng point : positionPourCetElement) {
                         rectOptions.add(point);
                     }
 
@@ -251,8 +251,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     @Override
@@ -263,6 +262,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 
