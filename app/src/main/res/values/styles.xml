@@ -17,4 +17,26 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.Login" parent="android:Theme.Holo.Light">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#D86060</item>
+        <item name="android:buttonStyle">@style/AppTheme.Login.Button</item>
+        <item name="android:editTextStyle">@style/AppTheme.Login.TextField</item>
+    </style>
+
+    <style name="AppTheme.Login.Button" parent="android:style/Widget.Button">
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="AppTheme.Login.TextField" parent="android:style/Widget.EditText">
+        <item name="android:background">@drawable/rounded_edittext</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">50dp</item>
+        <item name="android:textColor">#8F0E0E</item>
+    </style>
+
 </resources>
