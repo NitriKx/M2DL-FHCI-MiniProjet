@@ -2,7 +2,7 @@
     <string name="app_name">UPSPOI</string>
     <string name="title_activity_main">Map</string>
     <string name="title_activity_login">Authentification</string>
-    <string name="login_placeholder_login">Votre nom</string>
-    <string name="login_button_login">Login</string>
+    <string name="login_placeholder_login">Nom d\'utilisateur</string>
+    <string name="login_button_login">CONNEXION</string>
     <string name="title_activity_photo">PhotoActivity</string>
 </resources>
