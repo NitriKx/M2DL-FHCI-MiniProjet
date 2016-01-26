@@ -21,15 +21,15 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="POI"
         android:id="@+id/prendrePhoto"
         android:onClick="clickPrendrePhoto"
         android:layout_marginBottom="131dp"
-        android:background="#ffffff"
         android:layout_marginRight="9dp"
         android:layout_marginEnd="9dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:singleLine="false"
+        android:background="@drawable/icone_camera" />
 
 </RelativeLayout>
