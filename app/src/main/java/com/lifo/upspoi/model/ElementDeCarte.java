@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
-@ModelContainer
 @Table(database = BaseDeDonneeLocale.class)
+@ModelContainer
 public class ElementDeCarte  extends BaseModel {
 
     @PrimaryKey(autoincrement = true)

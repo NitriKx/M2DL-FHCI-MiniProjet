@@ -11,13 +11,13 @@ import java.util.List;
 public class ColorTypeConverter extends TypeConverter<String,Color> {
     @Override
     public String getDBValue(Color model) {
-        if (model == null) { return null; }
+        if (model == null) { return ""; }
         return String.format("%d;%d;%d", model.getRouge(), model.getVert(), model.getBleu());
     }
 
     @Override
     public Color getModelValue(String data) {
-        if (data == null) { return null; }
+        if (data == null || "".equals(data)) { return null; }
         List<String> splittedData = Splitter.on(";").splitToList(data);
         return new Color(Integer.parseInt(splittedData.get(0)), Integer.parseInt(splittedData.get(1)), Integer.parseInt(splittedData.get(2)));
     }

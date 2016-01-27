@@ -90,7 +90,7 @@ public class InitialisationService {
      *
      */
     private void initialiserTags() {
-        Long id = null;
+        Long id = -1L;
         List<PointTag> listeTags = Lists.newArrayList(
                 new PointTag(id, "recyclage"),
                 new PointTag(id, "verre", new Color(0, 255, 0)),
@@ -115,7 +115,7 @@ public class InitialisationService {
         // Récupère la liste des tags afin de garder des références communes
         Map<String, PointTag> listeTag = PointInteretService.getInstance().getTagsDeclare();
 
-        Long id = null;
+        Long id = -1L;
         List<ElementDeCarte> elementsRecyclagePaulSabatier = Lists.newArrayList(
                 new ElementDeCarte(id, "verre", Lists.newArrayList(listeTag.get("recyclage"), listeTag.get("verre")), new Image(id, "", null), new LatLng(43.55891, 1.47303)),
                 new ElementDeCarte(id, "verre", Lists.newArrayList(listeTag.get("recyclage"), listeTag.get("verre")), new Image(id, "", null), new LatLng(43.55999, 1.47194)),
