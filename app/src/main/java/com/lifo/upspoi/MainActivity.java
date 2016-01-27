@@ -67,8 +67,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Initialise la base de données locale avec les données par défaut
         InitialisationService.getInstance().initialiserBaseSiBesoin();
 
-        startActivity(new Intent(this, DatabaseDebugActivity.class));
-
         // Vérifie que l'utilisateur est bien authentifié, sinon on lui montre l'acitivité de login
         verifierLogin();
 

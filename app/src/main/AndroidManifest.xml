@@ -52,10 +52,6 @@
             android:theme="@style/AppTheme.Login"></activity>
 
         <activity
-            android:name=".DatabaseDebugActivity"
-            android:label="@string/title_activity_database_debug"></activity>
-
-        <activity
             android:name=".PhotoActivity"
             android:label="@string/title_activity_photo"
             android:theme="@style/AppTheme.NoActionBar"></activity>
