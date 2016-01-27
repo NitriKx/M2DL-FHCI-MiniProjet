@@ -34,7 +34,8 @@ public class MySpinnerAdapter extends ArrayAdapter<String> {
     private void applyColor(View view, int position)
     {
         TextView text = (TextView) view.findViewById(android.R.id.text1);
-        text.setTextSize(30f);
+        text.setTextSize(25f);
+        text.setPadding(5,5,5,5);
         if (position == 0) {
             text.setTextColor(Color.BLACK);
         } else {

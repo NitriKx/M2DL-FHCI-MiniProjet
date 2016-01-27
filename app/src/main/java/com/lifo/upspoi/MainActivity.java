@@ -95,6 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void ajoutTagListe() {
         spinner = (Spinner) findViewById(R.id.tags_spinner);
+
         List<String> list = new ArrayList<String>();
 
         list.add("Tous");
