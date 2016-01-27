@@ -15,21 +15,23 @@
         android:id="@+id/tags_spinner"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/abc_text_size_display_2_material"
-        android:background="#ffffff" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="POI"
         android:id="@+id/prendrePhoto"
         android:onClick="clickPrendrePhoto"
         android:layout_marginBottom="131dp"
-        android:background="#ffffff"
         android:layout_marginRight="9dp"
         android:layout_marginEnd="9dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:singleLine="false"
+        android:background="@drawable/icone_camera" />
 
 </RelativeLayout>
