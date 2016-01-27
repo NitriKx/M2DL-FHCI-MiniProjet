@@ -35,9 +35,9 @@ public class UtilisateurService {
     public Utilisateur loggerUtilisateur(String nomUtilisateur, String passwordEnClair) {
         Utilisateur utilisateurConnecte = new Utilisateur(nomUtilisateur, passwordEnClair);
         utilisateurConnecte.save();
-        Log.i("LOGIN", "Authentification de l'utilisateur = " + utilisateurConnecte.getNomUtilisateur());
+        Log.i("LOGIN", "Authentification de l'utilisateur = " + utilisateurConnecte.nomUtilisateur);
 
-        this.utilisateurAuthentifie = new UtilisateurAuthentifie(0L, utilisateurConnecte, new Date());
+        this.utilisateurAuthentifie = new UtilisateurAuthentifie(utilisateurConnecte, new Date());
         this.utilisateurAuthentifie.save();
 
         return utilisateurConnecte;
@@ -53,7 +53,7 @@ public class UtilisateurService {
         // On essaie de voir si l'utilisateur s'est déjà loggué avant
         if (estLoggue()) {
             this.utilisateurAuthentifie = getUtilisateurConnecte();
-            Log.i("LOGIN", "Utilisateur déjà loggué = " + this.utilisateurAuthentifie.getLoggedInUser().getNomUtilisateur());
+            Log.i("LOGIN", "Utilisateur déjà loggué = " + this.utilisateurAuthentifie.loggedInUser.nomUtilisateur);
         } else {
             Log.i("LOGIN", "Utilisateur pas encore loggué");
         }

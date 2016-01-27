@@ -24,7 +24,7 @@ public class PointInteretService {
         ImmutableMap.Builder<String, PointTag> listeTagIndexee = ImmutableMap.builder();
 
         for (PointTag t : listeTagDansLaBase) {
-            listeTagIndexee.put(t.getNomTag(), t);
+            listeTagIndexee.put(t.nomTag, t);
         }
 
         return listeTagIndexee.build();

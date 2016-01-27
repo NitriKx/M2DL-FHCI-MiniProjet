@@ -39,8 +39,8 @@ public class MySpinnerAdapter extends ArrayAdapter<String> {
         if (position == 0) {
             text.setTextColor(Color.BLACK);
         } else {
-            if (tags.get(position-1).getCouleur() != null) {
-                text.setTextColor(tags.get(position-1).getCouleur().getIntCouleur());
+            if (tags.get(position-1).couleur != null) {
+                text.setTextColor(tags.get(position-1).couleur.getIntCouleur());
             }
         }
     }

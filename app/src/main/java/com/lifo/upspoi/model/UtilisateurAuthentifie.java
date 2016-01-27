@@ -2,6 +2,7 @@ package com.lifo.upspoi.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -17,18 +18,18 @@ import java.util.Date;
 public class UtilisateurAuthentifie extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    private Long id;
+    @Column
+    public int id;
 
     @Column
-    @ForeignKey
-    private Utilisateur loggedInUser;
+    @ForeignKey(saveForeignKeyModel = false)
+    public Utilisateur loggedInUser;
 
     @Column
-    private Date lastLoginDate;
+    public Date lastLoginDate;
 
-    public UtilisateurAuthentifie(Long id, Utilisateur loggedInUser, Date lastLoginDate) {
+    public UtilisateurAuthentifie(Utilisateur loggedInUser, Date lastLoginDate) {
         super();
-        this.id = id;
         this.loggedInUser = loggedInUser;
         this.lastLoginDate = lastLoginDate;
     }
@@ -37,27 +38,4 @@ public class UtilisateurAuthentifie extends BaseModel {
         super();
     }
 
-    public Utilisateur getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public void setLoggedInUser(Utilisateur loggedInUser) {
-        this.loggedInUser = loggedInUser;
-    }
-
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

@@ -17,84 +17,50 @@ import java.util.List;
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
-@Table(database = BaseDeDonneeLocale.class)
 @ModelContainer
+@Table(database = BaseDeDonneeLocale.class)
 public class ElementDeCarte  extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    private Long id;
+    @Column
+    public int id;
 
     @Column
-    private String nom;
+    public String nom;
 
     @Column(typeConverter = ListPointTagTypeConverter.class)
     // DOIT être une liste de PointTag
-    private List tagsAssocies;
+    public List tagsAssocies;
 
     @Column
-    @ForeignKey
-    private Image image;
+    @ForeignKey(saveForeignKeyModel = false)
+    public Image image;
 
     @Column(typeConverter = ListLatLngTypeConverter.class)
     // DOIT être une liste de LatLng
-    private List points;
+    public List points;
 
     public ElementDeCarte() {
         super();
     }
 
-    public ElementDeCarte(Long id, String nom, List<PointTag> tagsAssocies, Image image, LatLng point) {
-        this(id, nom, tagsAssocies, image, Lists.newArrayList(point));
+    public ElementDeCarte(String nom, List<PointTag> tagsAssocies, Image image, LatLng point) {
+        this(nom, tagsAssocies, image, Lists.newArrayList(point));
     }
 
-    public ElementDeCarte(Long id, String nom, List<PointTag> tagsAssocies, Image image, List<LatLng> points) {
+    public ElementDeCarte(String nom, List<PointTag> tagsAssocies, Image image, List<LatLng> points) {
         super();
-        this.id = id;
         this.nom = nom;
         this.tagsAssocies = tagsAssocies;
         this.image = image;
         this.points = points;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public List<PointTag> getTagsAssocies() {
-        return tagsAssocies;
-    }
-
-    public void setTagsAssocies(List<PointTag> tagsAssocies) {
-        this.tagsAssocies = tagsAssocies;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-
     public Color getCouleur() {
         for (Object o : tagsAssocies) {
             PointTag tag = (PointTag) o;
-            if (!tag.getNomTag().equals("recyclage")) {
-                return tag.getCouleur();
+            if (!tag.nomTag.equals("recyclage")) {
+                return tag.couleur;
             }
         }
         return new Color(190,190,190);
@@ -104,7 +70,7 @@ public class ElementDeCarte  extends BaseModel {
         StringBuilder resultat = new StringBuilder();
         for (Object o : tagsAssocies) {
             PointTag tag = (PointTag) o;
-            resultat.append("["+tag.getNomTag()+"]");
+            resultat.append("["+tag.nomTag+"]");
         }
         return resultat.toString();
     }

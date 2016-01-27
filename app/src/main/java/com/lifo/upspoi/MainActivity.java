@@ -154,8 +154,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             correspondAuFiltre = false;
 
             if (filtre != null) {
-                for (PointTag tag : element.getTagsAssocies()) {
-                    if (tag.getNomTag().equals(filtre)) {
+                for (Object o : element.tagsAssocies) {
+                    PointTag tag = (PointTag) o;
+                    if (tag.nomTag.equals(filtre)) {
                         correspondAuFiltre = true;
                     }
                 }
@@ -170,7 +171,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (positionPourCetElement.size() == 1) {
                     mMap.addMarker(new MarkerOptions()
                             .position(positionPourCetElement.get(0))
-                            .title(element.getNom())
+                            .title(element.nom)
                             .snippet(element.getNomTags())
                             .icon(BitmapDescriptorFactory.defaultMarker(element.getCouleur().getHue())));
                 }

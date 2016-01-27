@@ -24,7 +24,7 @@ public class ListLatLngTypeConverter extends TypeConverter<String, List> {
         List<String> latlngAsStringList = Lists.transform(latlngModel, new Function<LatLng, String>() {
             @Override
             public String apply(LatLng input) {
-                return String.format("%d%s%d", input.latitude, latlngSeparator, input.longitude);
+                return String.format("%f%s%f", input.latitude, latlngSeparator, input.longitude);
             }
         });
 
