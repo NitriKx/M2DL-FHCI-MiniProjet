@@ -175,7 +175,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                     String snippetText = element.getNomTags();
                     if (element.image != null) {
-                        snippetText = String.format("%s\nAfficher la photo", element.getNomTags(), element.image.imageURL);
+                        snippetText = String.format("Afficher la photo", element.getNomTags(), element.image.imageURL);
                     }
 
                     mMap.addMarker(new MarkerOptions()

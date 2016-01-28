@@ -1,7 +1,6 @@
 package com.lifo.upspoi.services;
 
 import android.net.Uri;
-import android.nfc.Tag;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
@@ -16,8 +15,7 @@ import com.lifo.upspoi.model.PointTag;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import java.net.URI;
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +42,8 @@ public class PointInteretService {
 
     public Uri getPhotoURLForMarkerId(Integer markerId) {
         try {
-            Image imageAssociee = SQLite.select().from(Image.class).as("Image").crossJoin(ElementDeCarte.class).as("ElementDeCarte").on(ElementDeCarte_Table.ref_image_id.eq(Image_Table.image_id)).querySingle();
-            return new Uri.Builder().path(imageAssociee.imageURL).build();
+            Image imageAssociee = SQLite.select().from(Image.class).as("Image").crossJoin(ElementDeCarte.class).as("ElementDeCarte").on(ElementDeCarte_Table.ref_image_id.eq(Image_Table.image_id), ElementDeCarte_Table.element_id.eq(markerId)).querySingle();
+            return Uri.fromFile(new File(imageAssociee.imageURL));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
