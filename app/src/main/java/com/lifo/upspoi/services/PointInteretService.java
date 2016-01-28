@@ -7,9 +7,13 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.lifo.upspoi.model.ElementDeCarte;
+import com.lifo.upspoi.model.ElementDeCarte_Table;
+import com.lifo.upspoi.model.Image;
 import com.lifo.upspoi.model.PointTag;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +35,29 @@ public class PointInteretService {
     }
 
     public List<? extends ElementDeCarte> getElementDeCarteDansZone(Polygon zone) {
-            return SQLite.select().from(ElementDeCarte.class).queryList();
+        return SQLite.select().from(ElementDeCarte.class).queryList();
+    }
+
+    public URI getPhotoURLForMarkerId(Integer markerId) {
+        try {
+            ElementDeCarte elementDeCarteParId = getElementDeCarteParId(markerId);
+            return new URI(elementDeCarteParId.image.imageURL);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ElementDeCarte getElementDeCarteParId (Integer id) {
+        return SQLite.select().from(ElementDeCarte.class).where(ElementDeCarte_Table.id.eq(id)).querySingle();
+    }
+
+    public ElementDeCarte ajouterElement(String nom, List<PointTag> tagsAssocies, String imageURI, LatLng point) {
+        Image imageAssociee = new Image(imageURI, null);
+        imageAssociee.save();
+        ElementDeCarte nouvelElementDeCarte = new ElementDeCarte(nom, tagsAssocies, imageAssociee, point);
+        nouvelElementDeCarte.save();
+        return nouvelElementDeCarte;
     }
 
     public List<LatLng> getDelimitationFac() {

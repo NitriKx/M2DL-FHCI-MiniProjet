@@ -6,4 +6,5 @@
     <string name="login_button_login">CONNEXION</string>
     <string name="title_activity_photo">PhotoActivity</string>
     <string name="title_activity_database_debug">Database debug</string>
+    <string name="default_poi_marker_name">Point d\'intérêt</string>
 </resources>

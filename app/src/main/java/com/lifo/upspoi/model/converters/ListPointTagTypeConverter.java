@@ -1,5 +1,7 @@
 package com.lifo.upspoi.model.converters;
 
+import android.util.Log;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -26,7 +28,12 @@ public class ListPointTagTypeConverter extends TypeConverter<String,List> {
         if (modelPointTag == null || modelPointTag.size() == 0) {
             return "";
         }
-        return Joiner.on(separator).join(modelPointTag);
+        try {
+            return Joiner.on(separator).join(modelPointTag);
+        } catch (Exception e) {
+            Log.e("BDD", "Impossible de serializer " + modelPointTag);
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

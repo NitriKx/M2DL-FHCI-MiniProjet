@@ -29,6 +29,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -37,6 +38,7 @@ import com.lifo.upspoi.Utils.MySpinnerAdapter;
 import com.lifo.upspoi.listener.MyOnInfoWindowClickListener;
 import com.lifo.upspoi.listener.MyOnItemSelectedListener;
 import com.lifo.upspoi.model.ElementDeCarte;
+import com.lifo.upspoi.model.Image;
 import com.lifo.upspoi.model.PointTag;
 import com.lifo.upspoi.services.InitialisationService;
 import com.lifo.upspoi.services.PointInteretService;
@@ -44,6 +46,7 @@ import com.lifo.upspoi.services.UtilisateurService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -144,6 +147,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         elementsCarte = pointInteretService.getElementDeCarteDansZone(null);
 
+        mMap.setOnInfoWindowClickListener(new MyOnInfoWindowClickListener(this));
+
         mMap.clear();
 
         // Ajout marqueurs pour éléments du plan de recyclage
@@ -169,8 +174,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (positionPourCetElement.size() == 1) {
                     mMap.addMarker(new MarkerOptions()
                             .position(positionPourCetElement.get(0))
-                            .title(element.nom)
-                            .snippet(element.getNomTags())
+                            .title(element.id + " - " + element.nom)
+                            .snippet(String.format("<p>%s</p><a href=\"%s\">Photo</p>", element.getNomTags(), element.image.imageURL))
                             .icon(BitmapDescriptorFactory.defaultMarker(element.getCouleur().getHue())));
                 }
 
@@ -202,12 +207,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Création de l'intent de type ACTION_IMAGE_CAPTURE
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-// Création d'un fichier de type image
-        File photo = new File(Environment.getExternalStorageDirectory(), "Pic.jpg");
+
+        // Création d'un fichier de type image
+        File photo = new File(Environment.getExternalStorageDirectory(), "Photo_POI_" + new Date().getTime() + ".jpg");
         imageUri = Uri.fromFile(photo);
-// On fait le lien entre la photo prise et le fichier que l'on vient de créer
+
+        // On fait le lien entre la photo prise et le fichier que l'on vient de créer
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-// Lancement de l'intent
+
+        // Lancement de l'intent
         startActivityForResult(intent, 100);
     }
 
@@ -216,8 +224,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && mLastLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("POI").snippet("Voir la photo"));
-            mMap.setOnInfoWindowClickListener(new MyOnInfoWindowClickListener(this, imageUri));
+            PointInteretService.getInstance().ajouterElement(getString(R.string.default_poi_marker_name), new ArrayList<PointTag>(), imageUri.getPath(), new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+            // Force à rafrachir en reselecionnant le même filtrage
+            spinner.setSelection(spinner.getSelectedItemPosition());
         }
     }
 

@@ -12,6 +12,8 @@ public class MyOnItemSelectedListener implements android.widget.AdapterView.OnIt
 
     private MainActivity act;
 
+    private String dernierFiltreUtilise;
+
     public MyOnItemSelectedListener(MainActivity act) {
         this.act = act;
     }
@@ -22,11 +24,16 @@ public class MyOnItemSelectedListener implements android.widget.AdapterView.OnIt
         if (filtre.equals("Tous")) {
             filtre = null;
         }
+        dernierFiltreUtilise = filtre;
         act.afficherPOI(filtre);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public String getDernierFiltreUtilise() {
+        return dernierFiltreUtilise;
     }
 }
