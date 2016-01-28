@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">UPS Points d'intérêts</string>
-    <string name="title_activity_main">UPS Points d'intérêts</string>
+    <string name="app_name">UPS Points d\'intérêts</string>
+    <string name="title_activity_main">UPS Points d\'intérêts</string>
 
     <string name="title_activity_login">Authentification</string>
     <string name="login_placeholder_login">Nom d\'utilisateur</string>
     <string name="login_button_login">CONNEXION</string>
 
-    <string name="title_activity_photo">Photo du point d'intérêt</string>
+    <string name="title_activity_photo">Photo du point d\'intérêt</string>
 
-    <string name="default_poi_marker_name">Point d'intérêt</string>
+    <string name="default_poi_marker_name">Point d\'intérêt</string>
 </resources>
