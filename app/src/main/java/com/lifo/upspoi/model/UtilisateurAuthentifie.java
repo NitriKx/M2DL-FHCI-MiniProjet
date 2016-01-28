@@ -7,37 +7,35 @@ import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Date;
 
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
 @ModelContainer
 @Table(database = BaseDeDonneeLocale.class)
-public class Image extends BaseModel {
+public class UtilisateurAuthentifie extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    @Column(name = "image_id")
-    public int image_id;
-
     @Column
-    public String imageURL;
+    public int id;
 
     @Column
     @ForeignKey(saveForeignKeyModel = false)
-    public Utilisateur createur;
+    public Utilisateur loggedInUser;
 
-    public Image() {
+    @Column
+    public Date lastLoginDate;
+
+    public UtilisateurAuthentifie(Utilisateur loggedInUser, Date lastLoginDate) {
         super();
+        this.loggedInUser = loggedInUser;
+        this.lastLoginDate = lastLoginDate;
     }
 
-    public Image(String imageURL, Utilisateur createur) {
+    public UtilisateurAuthentifie() {
         super();
-        this.imageURL = imageURL;
-        this.createur = createur;
     }
 
 }

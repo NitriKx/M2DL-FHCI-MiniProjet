@@ -1,56 +1,67 @@
 package com.lifo.upspoi.model;
 
 import com.lifo.upspoi.Utils.Color;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.common.collect.Lists;
+import com.lifo.upspoi.model.converters.ListLatLngTypeConverter;
+import com.lifo.upspoi.model.converters.ListPointTagTypeConverter;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
 /**
  * Created by Benoît Sauvère on 21/01/16.
  */
-public class ElementDeCarte {
+@ModelContainer
+@Table(database = BaseDeDonneeLocale.class)
+public class ElementDeCarte  extends BaseModel {
 
-    private String nom;
+    @PrimaryKey(autoincrement = true)
+    @Column(name = "element_id")
+    public int element_id;
 
-    private List<Tag> tagsAssocies;
+    @Column
+    public String nom;
 
-    private Image image;
+    @Column(typeConverter = ListPointTagTypeConverter.class)
+    // DOIT être une liste de PointTag
+    public List tagsAssocies;
 
+    @Column
+    @ForeignKey(saveForeignKeyModel = false, references = @ForeignKeyReference(columnName = "ref_image_id", columnType = int.class, foreignKeyColumnName = "image_id"))
+    public Image image;
 
-    public ElementDeCarte(String nom, List<Tag> tagsAssocies, Image image) {
+    @Column(typeConverter = ListLatLngTypeConverter.class)
+    // DOIT être une liste de LatLng
+    public List points;
+
+    public ElementDeCarte() {
+        super();
+    }
+
+    public ElementDeCarte(String nom, List<PointTag> tagsAssocies, Image image, LatLng point) {
+        this(nom, tagsAssocies, image, Lists.newArrayList(point));
+    }
+
+    public ElementDeCarte(String nom, List<PointTag> tagsAssocies, Image image, List<LatLng> points) {
+        super();
         this.nom = nom;
         this.tagsAssocies = tagsAssocies;
         this.image = image;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public List<Tag> getTagsAssocies() {
-        return tagsAssocies;
-    }
-
-    public void setTagsAssocies(List<Tag> tagsAssocies) {
-        this.tagsAssocies = tagsAssocies;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
+        this.points = points;
     }
 
     public Color getCouleur() {
-        for (Tag tag:tagsAssocies
-             ) {
-            if (!tag.getNomTag().equals("recyclage")) {
-                return tag.getCouleur();
+        for (Object o : tagsAssocies) {
+            PointTag tag = (PointTag) o;
+            if (!tag.nomTag.equals("recyclage")) {
+                return tag.couleur;
             }
         }
         return new Color(190,190,190);
@@ -58,10 +69,29 @@ public class ElementDeCarte {
 
     public String getNomTags() {
         StringBuilder resultat = new StringBuilder();
-        for (Tag tag:tagsAssocies
-             ) {
-            resultat.append("["+tag.getNomTag()+"]");
+        for (Object o : tagsAssocies) {
+            PointTag tag = (PointTag) o;
+            resultat.append("["+tag.nomTag+"]");
         }
         return resultat.toString();
     }
+
+    public List<LatLng> getPoints() {
+        return points;
+    }
+
+    public void setPoints(List<LatLng> points) {
+        this.points = points;
+    }
+
+    @Override
+    public String toString() {
+        return "ElementDeCarte{" +
+                "nom='" + nom + '\'' +
+                ", tagsAssocies=" + tagsAssocies +
+                ", image=" + image +
+                ", points=" + points +
+                '}';
+    }
+
 }
