@@ -215,7 +215,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Création d'un fichier de type image
-        File photo = new File(Environment.getExternalStorageDirectory(), "Photo_POI_" + new Date().getTime() + ".jpg");
+        File photo = new File(Environment.getExternalStorageDirectory() + "/UPSPOI", "Photo_POI_" + new Date().getTime() + ".jpg");
         imageUri = Uri.fromFile(photo);
 
         // On fait le lien entre la photo prise et le fichier que l'on vient de créer
