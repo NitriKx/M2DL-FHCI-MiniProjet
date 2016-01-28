@@ -14,4 +14,5 @@ public class UPSPOIApplication extends MultiDexApplication {
         super.onCreate();
         FlowManager.init(this);
     }
+
 }
