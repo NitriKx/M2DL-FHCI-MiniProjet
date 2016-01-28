@@ -172,10 +172,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // MARKER - Si le nombre de position est égal à 1, cela signifie que l'on souhaite dessiner un point
                 if (positionPourCetElement.size() == 1) {
+
+                    String snippetText = element.getNomTags();
+                    if (element.image != null) {
+                        snippetText = String.format("%s\nAfficher la photo", element.getNomTags(), element.image.imageURL);
+                    }
+
                     mMap.addMarker(new MarkerOptions()
                             .position(positionPourCetElement.get(0))
-                            .title(element.id + " - " + element.nom)
-                            .snippet(String.format("<p>%s</p><a href=\"%s\">Photo</p>", element.getNomTags(), element.image.imageURL))
+                            .title(element.element_id + " - " + element.nom)
+                            .snippet(snippetText)
                             .icon(BitmapDescriptorFactory.defaultMarker(element.getCouleur().getHue())));
                 }
 
@@ -226,8 +232,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (resultCode == RESULT_OK && mLastLocation != null) {
             PointInteretService.getInstance().ajouterElement(getString(R.string.default_poi_marker_name), new ArrayList<PointTag>(), imageUri.getPath(), new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
-            // Force à rafrachir en reselecionnant le même filtrage
-            spinner.setSelection(spinner.getSelectedItemPosition());
+            // On redessine les points
+            spinner.setSelection(0);
+            afficherPOI(null);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.lifo.upspoi.services;
 
+import android.net.Uri;
 import android.nfc.Tag;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -7,9 +8,12 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.lifo.upspoi.model.ElementDeCarte;
+import com.lifo.upspoi.model.ElementDeCarte_Adapter;
 import com.lifo.upspoi.model.ElementDeCarte_Table;
 import com.lifo.upspoi.model.Image;
+import com.lifo.upspoi.model.Image_Table;
 import com.lifo.upspoi.model.PointTag;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.net.URI;
@@ -38,10 +42,10 @@ public class PointInteretService {
         return SQLite.select().from(ElementDeCarte.class).queryList();
     }
 
-    public URI getPhotoURLForMarkerId(Integer markerId) {
+    public Uri getPhotoURLForMarkerId(Integer markerId) {
         try {
-            ElementDeCarte elementDeCarteParId = getElementDeCarteParId(markerId);
-            return new URI(elementDeCarteParId.image.imageURL);
+            Image imageAssociee = SQLite.select().from(Image.class).as("Image").crossJoin(ElementDeCarte.class).as("ElementDeCarte").on(ElementDeCarte_Table.ref_image_id.eq(Image_Table.image_id)).querySingle();
+            return new Uri.Builder().path(imageAssociee.imageURL).build();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -49,7 +53,7 @@ public class PointInteretService {
     }
 
     public ElementDeCarte getElementDeCarteParId (Integer id) {
-        return SQLite.select().from(ElementDeCarte.class).where(ElementDeCarte_Table.id.eq(id)).querySingle();
+        return SQLite.select().from(ElementDeCarte.class).where(ElementDeCarte_Table.element_id.eq(id)).querySingle();
     }
 
     public ElementDeCarte ajouterElement(String nom, List<PointTag> tagsAssocies, String imageURI, LatLng point) {

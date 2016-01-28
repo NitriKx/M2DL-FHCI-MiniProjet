@@ -20,8 +20,8 @@ import java.util.Map;
 public class Image extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    @Column
-    public int id;
+    @Column(name = "image_id")
+    public int image_id;
 
     @Column
     public String imageURL;

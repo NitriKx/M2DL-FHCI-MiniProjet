@@ -14,8 +14,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 public class Utilisateur extends BaseModel {
 
     @PrimaryKey
-    @Column
-    public int id;
+    @Column(name = "utilisateur_id")
+    public int utilisateur_id;
 
     @Column
     public String nomUtilisateur;

@@ -16,8 +16,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 public class PointTag extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    @Column
-    public int id;
+    @Column(name = "point_id")
+    public int point_id;
 
     @Column
     public String nomTag;

@@ -34,7 +34,7 @@ public class MyOnInfoWindowClickListener implements GoogleMap.OnInfoWindowClickL
             int markerId = Integer.parseInt(splitterTitle[0]);
 
             // On récupère l'URI de l'image associée
-            URI photoURLForMarkerId = PointInteretService.getInstance().getPhotoURLForMarkerId(markerId);
+            Uri photoURLForMarkerId = PointInteretService.getInstance().getPhotoURLForMarkerId(markerId);
 
             Intent i = new Intent(act, PhotoActivity.class);
             i.putExtra("bitmapImage", photoURLForMarkerId);

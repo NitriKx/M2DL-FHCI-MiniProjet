@@ -7,6 +7,7 @@ import com.lifo.upspoi.model.converters.ListLatLngTypeConverter;
 import com.lifo.upspoi.model.converters.ListPointTagTypeConverter;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -22,8 +23,8 @@ import java.util.List;
 public class ElementDeCarte  extends BaseModel {
 
     @PrimaryKey(autoincrement = true)
-    @Column
-    public int id;
+    @Column(name = "element_id")
+    public int element_id;
 
     @Column
     public String nom;
@@ -33,7 +34,7 @@ public class ElementDeCarte  extends BaseModel {
     public List tagsAssocies;
 
     @Column
-    @ForeignKey(saveForeignKeyModel = false)
+    @ForeignKey(saveForeignKeyModel = false, references = @ForeignKeyReference(columnName = "ref_image_id", columnType = int.class, foreignKeyColumnName = "image_id"))
     public Image image;
 
     @Column(typeConverter = ListLatLngTypeConverter.class)
